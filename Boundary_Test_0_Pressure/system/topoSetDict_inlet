@@ -1,0 +1,113 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// To Visualize: foamToVTK -faceSet inlet
+
+//Elevation to split the patch
+Zwater 240.483;
+
+actions
+(
+
+
+    // Create a faceSet from the inlet patch
+    {
+      name    inletFaces;
+      type    faceSet;
+      action  new;
+      source  patchToFace;
+      sourceInfo
+      {
+          name "inlet";
+      }
+    }
+
+    //Select water faces using a box
+    {
+      name    inlet_waterFaces;
+      type    faceSet;
+      action  new;
+      source  boxToFace;
+      sourceInfo
+      {
+        // box (MINX MINY MINZ) (MAXX MAXY MAXZ)
+        box (-100000 -100000 -100000) (100000 100000 $Zwater);
+      }
+    }
+
+    //Select air faces using a box
+    {
+      name    inlet_airFaces;
+      type    faceSet;
+      action  new;
+      source  boxToFace;
+      sourceInfo
+      {
+        box (-100000 -100000 $Zwater) (100000 100000 100000);
+      }
+    }
+
+    //Create a dummy faceSet
+    {
+      name    inlet_airPatch;
+      type    faceSet;
+      action  new;
+      source  faceToFace;
+      sourceInfo
+      {
+        set inletFaces;                 // Start with entire inlet face
+      }
+    }
+
+    //Remove inlet_waterFaces from dummy faceSet, leaving inlet_airPatch
+    {
+      name    inlet_airPatch;
+      type    faceSet;
+      action  delete;
+      source  faceToFace;
+      sourceInfo
+      {
+        set inlet_waterFaces;           // Remove inlet_waterFaces
+      }
+    }
+
+    //Create a dummy faceSet
+    {
+      name    inlet_waterPatch;
+      type    faceSet;
+      action  new;
+      source  faceToFace;
+      sourceInfo
+      {
+        set inletFaces;                 // Start with entire inlet face
+      }
+    }
+
+    //Remove inlet_airFaces from dummy faceSet, leaving inlet_waterPatch
+    {
+      name    inlet_waterPatch;
+      type    faceSet;
+      action  delete;
+      source  faceToFace;
+      sourceInfo
+      {
+        set inlet_airFaces;             // Remove inlet_airFaces
+      }
+    }
+
+
+ );
+                                                                            
