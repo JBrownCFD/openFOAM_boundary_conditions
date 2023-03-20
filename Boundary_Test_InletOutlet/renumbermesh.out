@@ -1,0 +1,127 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+/*   Windows 32 and 64 bit porting by blueCAPE: http://www.bluecape.com.pt   *\
+|  Based on Windows porting (2.0.x v4) by Symscape: http://www.symscape.com   |
+\*---------------------------------------------------------------------------*/
+Build  : 8-53cd1468e263
+Exec   : renumberMesh -parallel -overwrite
+Date   : Feb 05 2023
+Time   : 17:11:18
+Host   : "ENWOW07106NBF48"
+PID    : 42240
+I/O    : uncollated
+Case   : C:/PROGRA~1/BLUECF~2/ofuser-of8/run/Boundary_Test_InletOutlet
+nProcs : 8
+Slaves : 
+7
+(
+"ENWOW07106NBF48.26344"
+"ENWOW07106NBF48.32912"
+"ENWOW07106NBF48.42704"
+"ENWOW07106NBF48.35572"
+"ENWOW07106NBF48.27660"
+"ENWOW07106NBF48.41196"
+"ENWOW07106NBF48.45484"
+)
+
+Pstream initialized with:
+    floatTransfer      : 0
+    nProcsSimpleSum    : 0
+    commsType          : nonBlocking
+    polling iterations : 0
+SigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+// using new solver syntax:
+"pcorr.*"
+{
+    solver          GAMG;
+    tolerance       1e-07;
+    relTol          0;
+    smoother        DIC;
+    nPreSweeps      0;
+    nPostSweeps     2;
+    nFinestSweeps   2;
+    cacheAgglomeration true;
+    nCellsInCoarsestLevel 10;
+    agglomerator    faceAreaPair;
+    mergeLevels     1;
+    maxIter         10;
+}
+
+// using new solver syntax:
+p_rgh
+{
+    solver          GAMG;
+    tolerance       1e-07;
+    relTol          0.01;
+    smoother        DIC;
+    nPreSweeps      0;
+    nPostSweeps     2;
+    nFinestSweeps   2;
+    cacheAgglomeration true;
+    nCellsInCoarsestLevel 10;
+    agglomerator    faceAreaPair;
+    mergeLevels     1;
+}
+
+// using new solver syntax:
+p_rghFinal
+{
+    solver          GAMG;
+    tolerance       1e-08;
+    relTol          0;
+    smoother        DIC;
+    nPreSweeps      0;
+    nPostSweeps     2;
+    nFinestSweeps   2;
+    cacheAgglomeration true;
+    nCellsInCoarsestLevel 10;
+    agglomerator    faceAreaPair;
+    mergeLevels     1;
+}
+
+Mesh size: 283500
+Before renumbering :
+    band           : 35170
+    profile        : 4.0514679e+08
+
+Using default renumberMethod.
+
+Selecting renumberMethod CuthillMcKee
+
+Reading geometric fields
+
+Reading volScalarField nut
+Reading volScalarField k
+Reading volScalarField epsilon
+Reading volScalarField p_rgh
+Reading volScalarField alpha.water
+Reading volVectorField U
+
+Renumbering processor cell decomposition map cellProcAddressing
+Renumbering processor face decomposition map faceProcAddressing
+Renumbering processor point decomposition map pointProcAddressing
+After renumbering :
+    band           : 1059
+    profile        : 1.717371e+08
+
+Writing mesh to "constant"
+
+Renumbering faceSets:
+    inletWall
+    inletWater
+End
+
+Finalising parallel run
