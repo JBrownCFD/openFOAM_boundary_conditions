@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include        "include/initialConditions"
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform $turbulentKE;
+
+boundaryField
+{
+    #includeEtc "caseDicts/setConstraintTypes"
+    
+    inletWater
+    {
+        type            fixedValue;
+        value           $internalField;
+    }
+
+    outlet
+    {
+        type            mixed;
+        refValue       uniform 0;
+        refGradient    uniform 0;
+        valueFraction uniform 0;
+    }
+
+    "(right|left|inletWall|bottom|interface2)"
+    {
+        type            zeroGradient;
+    }
+
+
+     lid
+    {
+        type            inletOutlet;
+        inletValue      $internalField;
+        value           $internalField;
+    }
+
+}
+
+
+// ************************************************************************* //
